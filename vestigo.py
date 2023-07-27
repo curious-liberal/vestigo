@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 import json
 import requests
 
-def trace(file, info):
+def trace(file, info=None):
     """Takes JSON file in specific format
     and pings an API with the 'info' and then
     returns the results
@@ -25,6 +25,16 @@ def trace(file, info):
         )
 
     # Attempt to make requests from it
+
+    ## Goes through each info source separately
+    sources = apis.keys()
+    for src in sources:
+        pass
+        #TODO create JSON template for stuff
+        #TODO find a way for it to know based off 'src' how fetch API data
+        #TODO fetch api data
+        #TODO determine whether it was successful or not
+        #TODO deal with all errors
 
 
 
@@ -55,7 +65,7 @@ def main():
 
     ## Go through all email resources
     if args.email:
-        trace("email.json", args.username)
+        trace("mods/email.json", args.username)
 
 if __name__ == "__main__":
     main()
