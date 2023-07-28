@@ -6,7 +6,7 @@
             "errorType": "statusCode",
             "errorResponse": "302",
             "nameOfKeyToFormat": "url",
-            "url": "https://archiveofourown.org/users/{}/profile",
+            "url": "https://archiveofourown.org/users/{}",
             "headers": false,
             "requiresAPIKEY": false
         },

@@ -73,48 +73,59 @@ def trace(file, info):
         elif src_conf["details"]["headers"] is False:
             headers = {}
 
-        # Check whether to execute POST or GET request
-        if src_conf["details"]["requestType"] == "POST":
-            pass
-            #TODO be able to deal with POST requests
-        elif src_conf["details"]["requestType"] == "GET":
-            # Add params to be sent off with request
-            params = src_conf["toSend"]
+        # Set whether to send data as JSON
+        if src_conf["details"]["sendAsJSON"] is True:
+            headers["Content-Type"] = "application/json"
 
-            # Inject 'info' e.g. email into params
-            ## Check whether to inject into URL or not
-            if src_conf["details"]["nameOfKeyToFormat"] == "url":
-                #TODO iterate through multiple usernames and export to log
-                src_conf["details"]["url"] = src_conf["details"]["url"].format(info[0])
-            else:
-                src_conf["details"]["nameOfKeyToFormat"] = src_conf["details"]["nameOfKeyToFormat"].format(info)
+        # Add to_send to be sent off with request
+        to_send = src_conf["toSend"]
 
-            ## Inject api_key into params if necessary
+        # Inject 'info' e.g. email address into to_send
+        ## Check whether to inject into URL or not
+        if src_conf["details"]["nameOfKeyToFormat"] == "url":
+            #TODO iterate through multiple usernames and export to log
+            src_conf["details"]["url"] = src_conf["details"]["url"].format(info[0])
+        else:
+            src_conf["details"]["nameOfKeyToFormat"] = src_conf["details"]["nameOfKeyToFormat"].format(info)
+
+            ## Inject api_key into to_send if necessary
             if src_conf["details"]["requiresAPIKEY"] is True:
-                params["api_key"] = api_key
+                to_send["api_key"] = api_key
 
-            # Send request off
-            try:
-                # Send request
-                print(src_conf["details"]["url"])
-                req = requests.get(src_conf["details"]["url"], params=src_conf["toSend"], headers=headers, timeout=5, allow_redirects=False)
+        # Send request off
+        try:
+            # Check whether to execute POST or GET request
+            if src_conf["details"]["requestType"] == "POST":
+                req = requests.post(src_conf["details"]["url"], data=to_send, headers=headers, timeout=8)
+            elif src_conf["details"]["requestType"] == "GET":
+                req = requests.get(src_conf["details"]["url"], to_send=src_conf["toSend"], headers=headers, timeout=8)
 
-                # Check result
-                if src_conf["details"]["errorType"] == "message":
-                    if req.text == src_conf["details"]["errorResponse"]:
+            # Check results
+            ## Check if error message is present
+            if src_conf["details"]["errorType"] == "message":
+                if req.text == src_conf["details"]["errorResponse"]:
+                    print("failed")
+                else:
+                    print("success")
+            # Check for status code error
+            elif src_conf["details"]["errorType"] == "statusCode":
+                # If status code is an error
+                try:
+                    # Find first status code if redirected
+                    if req.history[0].status_code == int(src_conf["details"]["errorResponse"]):
                         print("failed")
                     else:
                         print("success")
-                elif src_conf["details"]["errorType"] == "statusCode":
+                except IndexError:
+                    # Find first status code if NOT redirected
                     if req.status_code == int(src_conf["details"]["errorResponse"]):
-                        #TODO need to handle redirects if they show up on account that status code is of last request NOT first, allow_redirects has temporarily been set to False
                         print("failed")
                     else:
                         print("success")
-            except requests.RequestException as err:
-                print(err)
-                print(err.args)
-                sys.exit(0)
+        except requests.RequestException as err:
+            print(err)
+            print(err.args)
+            sys.exit(0)
 
 def main():
     """Takes arguments and executes
