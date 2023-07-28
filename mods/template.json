@@ -1,0 +1,37 @@
+{
+    "api1": {
+        "details": {
+            "requestType": "POST | GET",
+            "sendAsJSON": true,
+            "errorType": "message | statusCode",
+            "errorResponse": "message | statusCode (as str)",
+            "nameOfKeyToFormat": "url | username",
+            "url": "https://url_to_send_request_to.com/",
+            "headers": true,  // will grab user-agent and accept from config.JSON
+            "requiresAPIKEY": true  // will grab from APIkeys.JSON (file specified in config.JSON) and look for api1["APIKEY"]
+        },
+        "toSend": {
+            "api_key": "{}",
+            "username": "{}",  // curly braces inside string for .format option later
+            "whateverotherparamsneedtobeinrequest": "whatever"  // Any other things you need in the request will be added to the params or pauload
+        }
+        },
+        "api2": {
+            "details": {
+                "requestType": "POST | GET",
+                "sendAsJSON": false,
+                "errorType": "message | status_code",
+                "errorMessage | errorStatusCode": "message | status_code (as str)",
+                "nameOfKeyToFormat": "url | username",
+                "url": "https://url_to_send_request_to.com/",
+                "user-agent": true,  // will grab from config.JSON
+                "accept": true,  // will grab from config.JSON
+                "requiresAPIKEY": true  // will grab from APIkeys.JSON (file specified in config.JSON) and look for api2["APIKEY"]
+            },
+            "toSend": {
+                "api_key": "iefhihig",
+                "username": "{}",  // curly braces inside string for .format option later
+                "whateverotherparamsneedtobeinrequest": "whatever"  // Any other things you need in the request will be added to the params or pauload
+            }
+            }
+}

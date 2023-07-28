@@ -1,0 +1,15 @@
+{
+    "Archive of Our Own": {
+        "details": {
+            "requestType": "GET",
+            "sendAsJSON": true,
+            "errorType": "statusCode",
+            "errorResponse": "302",
+            "nameOfKeyToFormat": "url",
+            "url": "https://archiveofourown.org/users/{}/profile",
+            "headers": false,
+            "requiresAPIKEY": false
+        },
+        "toSend": {}
+    }
+}
