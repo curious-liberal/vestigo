@@ -29,8 +29,6 @@ def trace(file, info):
     and pings an API with the 'info' and then
     returns the results
     """
-    #TODO log all this
-
     # Try to open JSON file
     def load_json(json_file):
         try:
@@ -86,8 +84,9 @@ def trace(file, info):
             if src_conf["details"]["nameOfKeyToFormat"] == "url":
                 src_conf["details"]["url"] = src_conf["details"]["url"].format(entity)
             else:
-                src_conf["details"]["nameOfKeyToFormat"] = src_conf["details"]["nameOfKeyToFormat"] \
-                    .format(info)  # Format curly braces in JSON string
+                 # Format curly braces in JSON string
+                src_conf["details"]["nameOfKeyToFormat"] = src_conf["details"] \
+                        ["nameOfKeyToFormat"].format(info)
 
                 ## Inject api_key into to_send if necessary
                 if src_conf["details"]["requiresAPIKEY"] is True:
@@ -144,11 +143,14 @@ def main():
     parser.add_argument("--phone",
     help="Sets target phone number (international format)")
 
-    parser.add_argument("--name",
-    help="Sets target name")
+    # Name and location must work together and thus trace \
+    # function must take 3 arguments or something
 
-    parser.add_argument("--location",
-    help="Sets target approximate location (allows excluding of specific geographical areas)")
+    # parser.add_argument("--name",
+    # help="Sets target name")
+
+    # parser.add_argument("--location",
+    # help="Sets target approximate location (allows excluding of specific geographical areas)")
 
     parser.add_argument("--username", nargs="+",
     help="Sets target user/ usernames (accepts multiple usernames - separated by spaces)")
@@ -156,15 +158,33 @@ def main():
     # Actions based on parser options
     args = parser.parse_args()
 
-    ## Go through all username resources
-    if args.username:
+    ## Go through all email resources
+    if args.email:
         # If not a list, put the username in one as a single element \
         # so it can be iterated through - this is so vertigo can easily \
         # accept multiple usernames :D
-        if type(args.username) == list:
+        if isinstance(args.email, list) is True:
+            trace("mods/emails.json", args.email)
+        else:
+            trace("mods/emails.json", [args.email])
+
+    ## Go through all username resources
+    if args.phone:
+        if isinstance(args.phone, list) is True:
+            trace("mods/phone.json", args.phone)
+        else:
+            trace("mods/phone.json", [args.phone])
+
+    ## Go through all username resources
+    if args.username:
+        if isinstance(args.username, list) is True:
             trace("mods/usernames.json", args.username)
         else:
             trace("mods/usernames.json", [args.username])
+
+    ## Go through all email resources
+    if args.location and args.name:
+        trace("mods/emails.json", [args.email])
 
 if __name__ == "__main__":
     main()
