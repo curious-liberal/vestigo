@@ -1,2 +1,4 @@
 {
+    "apikeys": "apikeys.json",
+    "headers": {"user-agent": "", "accept": ""}
 }
